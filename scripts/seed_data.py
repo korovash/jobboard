@@ -1,6 +1,6 @@
 # scripts/seed_data.py
 from app.database import SessionLocal, engine
-from app import models, crud, schemas
+from ..app import models, crud, schemas
 
 models.Base.metadata.create_all(bind=engine)
 
