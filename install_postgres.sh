@@ -6,4 +6,4 @@ dnf install -y postgresql17-server postgresql17-contrib
 systemctl enable postgresql-17 --now
 sudo -u postgres psql -c "CREATE USER jobuser WITH PASSWORD 'jobpass';"
 sudo -u postgres psql -c "CREATE DATABASE jobboard OWNER jobuser;"
-systemctl restart postgresql
+systemctl restart postgresql-17.service
