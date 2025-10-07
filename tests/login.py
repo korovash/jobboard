@@ -6,7 +6,7 @@ def test_login():
     with httpx.Client(follow_redirects=True) as client:
         # 1. Попробуем регистрацию (если есть форма регистрации)
         register_data = {
-            "email": "testuser@example.com",
+            "email": "testuser1@example.com",
             "password": "testpassword"
         }
         r = client.post(f"{BASE_URL}/auth/register-form", data=register_data)
@@ -14,7 +14,7 @@ def test_login():
 
         # 2. Логин
         login_data = {
-            "email": "testuser@example.com",
+            "email": "testuser1@example.com",
             "password": "testpassword"
         }
         r = client.post(f"{BASE_URL}/auth/login-form", data=login_data)
