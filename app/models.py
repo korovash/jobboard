@@ -5,11 +5,9 @@ from .database import Base
 import enum
 import datetime
 
-
 class UserType(enum.Enum):
     candidate = 'candidate'
     recruiter = 'recruiter'
-
 
 class User(Base):
     __tablename__ = 'users'
@@ -20,10 +18,9 @@ class User(Base):
     type = Column(Enum(UserType), nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-
-candidate = relationship('Candidate', uselist=False, back_populates='user')
-recruiter = relationship('Recruiter', uselist=False, back_populates='user')
-
+    # Имя свойств: candidate и recruiter — эти имена используются в back_populates других моделей
+    candidate = relationship('Candidate', uselist=False, back_populates='user')
+    recruiter = relationship('Recruiter', uselist=False, back_populates='user')
 
 class Candidate(Base):
     __tablename__ = 'candidates'
@@ -31,16 +28,18 @@ class Candidate(Base):
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     resume = Column(Text)
     skills = Column(String)
-    user = relationship('User', back_populates='candidate')
 
+    # back_populates ссылается на имя свойства в User — 'candidate'
+    user = relationship('User', back_populates='candidate')
 
 class Recruiter(Base):
     __tablename__ = 'recruiters'
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     company = Column(String)
-    user = relationship('User', back_populates='recruiter')
 
+    # back_populates ссылается на имя свойства в User — 'recruiter'
+    user = relationship('User', back_populates='recruiter')
 
 class Job(Base):
     __tablename__ = 'jobs'
@@ -51,4 +50,5 @@ class Job(Base):
     location = Column(String)
     posted_by = Column(Integer, ForeignKey('recruiters.id'))
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
     recruiter = relationship('Recruiter')
