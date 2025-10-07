@@ -7,7 +7,8 @@ def test_login():
         # регистрация
         register_data = {
             "email": "testuser@example.com",
-            "password": "testpassword"
+            "password": "testpassword",
+            "type": "candidate"
         }
         r = client.post(f"{BASE_URL}/auth/register-form", data=register_data)
         print("Register:", r.status_code, r.url)
