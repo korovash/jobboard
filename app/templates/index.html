@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Главная — Jobboard{% endblock %}
+
 {% block content %}
 <div class="hero">
   <div class="hero-card">
@@ -32,13 +33,12 @@
           </div>
         {% endif %}
       </div>
-
+      <a href="/auth/logout" class="btn btn-cta btn-logout">Выход</a>
     {% else %}
       <div class="d-flex justify-content-center mt-3">
         <a class="btn btn-cta btn-primary me-3" href="/auth/register">Регистрация</a>
         <a class="btn btn-cta btn-outline" href="/auth/login">Вход</a>
       </div>
-      <p class="mt-3" style="color:rgba(255,255,255,0.75)">Или посмотрите список вакансий без регистрации: <a href="/jobs" class="link-light">/jobs</a></p>
     {% endif %}
   </div>
 </div>
