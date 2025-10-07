@@ -1,14 +1,19 @@
 [Unit]
-Description=Jobboard FastAPI
+Description=Jobboard FastAPI (uvicorn)
 After=network.target
 
 [Service]
+Type=simple
 User=jobsvc
 Group=jobsvc
-WorkingDirectory=/path/to/jobboard
-Environment=DATABASE_URL=postgresql+psycopg2://jobuser:jobpass@localhost:5432/jobboard
-ExecStart=/path/to/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+WorkingDirectory=/home/admin/jobboard
+# Экспортируем окружение (опционально). Замени DB URL если нужно.
+Environment="PATH=/home/admin/jobboard/venv/bin"
+Environment="DATABASE_URL=postgresql+psycopg2://jobuser:jobpass@localhost:5432/jobboard"
+ExecStart=/home/admin/jobboard/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
 Restart=always
+RestartSec=5
+LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
