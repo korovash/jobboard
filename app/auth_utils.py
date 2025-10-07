@@ -1,6 +1,6 @@
 from itsdangerous import URLSafeSerializer
 from fastapi import Request, Response
-from .. import crud, models
+from . import crud, models
 
 SECRET_KEY = "CHANGE_THIS_TO_RANDOM_STRING"  # замени на что-то секретное
 serializer = URLSafeSerializer(SECRET_KEY, salt="cookie-session")
