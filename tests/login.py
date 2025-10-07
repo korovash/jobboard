@@ -25,3 +25,5 @@ def test_login():
         r = client.get(f"{BASE_URL}/")
         print("Main page:", r.status_code)
         print(r.text[:500])  # первые 500 символов HTML
+
+test_login
