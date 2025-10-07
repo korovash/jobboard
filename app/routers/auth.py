@@ -6,6 +6,7 @@ from ..database import get_db
 from .. import crud, schemas
 from fastapi.templating import Jinja2Templates
 import os
+from passlib.context import CryptContext
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), '..', 'templates'))
 router = APIRouter(prefix='/auth', tags=['auth'])
@@ -45,7 +46,11 @@ def login_form(request: Request, email: str = Form(...), password: str = Form(..
     if not db_user:
         return templates.TemplateResponse('login.html', {'request': request, 'error': 'Неверные учетные данные', 'user': {'authenticated': False}})
     from passlib.context import CryptContext
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    pwd_context = CryptContext(
+    schemes=["pbkdf2_sha256", "bcrypt"],
+    deprecated="auto"
+    )
+
     if not pwd_context.verify(password, db_user.hashed_password):
         return templates.TemplateResponse('login.html', {'request': request, 'error': 'Неверные учетные данные', 'user': {'authenticated': False}})
 
