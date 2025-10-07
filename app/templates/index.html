@@ -1,6 +1,45 @@
 {% extends 'base.html' %}
 {% block title %}Главная — Jobboard{% endblock %}
 {% block content %}
-<h1>Поиск вакансий</h1>
-<p>Здесь будет список вакансий. API: <code>/jobs</code></p>
+<div class="hero">
+  <div class="hero-card">
+    <h1>Найди работу своей мечты</h1>
+    <p class="lead">Соединяем соискателей и работодателей. Быстрый поиск, отклики и публикация резюме.</p>
+
+    {% if user and user.authenticated %}
+      <div class="tiles">
+        {% if user.type == 'candidate' %}
+          <div class="tile">
+            <h4>Поиск вакансий</h4>
+            <p>Поиск по категориям, навыкам и локации.</p>
+            <a class="btn btn-cta btn-primary" href="/jobs">Поиск вакансий</a>
+          </div>
+          <div class="tile">
+            <h4>Публикация резюме</h4>
+            <p>Добавьте своё резюме, укажите навыки и контакт.</p>
+            <a class="btn btn-cta btn-outline" href="/candidates/me/resume">Опубликовать резюме</a>
+          </div>
+        {% elif user.type == 'recruiter' %}
+          <div class="tile">
+            <h4>Поиск резюме</h4>
+            <p>Фильтрация по навыкам и опыту.</p>
+            <a class="btn btn-cta btn-primary" href="/candidates">Поиск резюме</a>
+          </div>
+          <div class="tile">
+            <h4>Публикация вакансии</h4>
+            <p>Создавайте вакансии, управляйте откликами.</p>
+            <a class="btn btn-cta btn-outline" href="/jobs/new">Новая вакансия</a>
+          </div>
+        {% endif %}
+      </div>
+
+    {% else %}
+      <div class="d-flex justify-content-center mt-3">
+        <a class="btn btn-cta btn-primary me-3" href="/auth/register">Регистрация</a>
+        <a class="btn btn-cta btn-outline" href="/auth/login">Вход</a>
+      </div>
+      <p class="mt-3" style="color:rgba(255,255,255,0.75)">Или посмотрите список вакансий без регистрации: <a href="/jobs" class="link-light">/jobs</a></p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
