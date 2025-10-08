@@ -6,6 +6,7 @@ from .routers import auth, jobs, candidates
 from .auth_utils import get_current_user
 from sqlalchemy.orm import Session
 import os
+from typing import Optional
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,8 +23,13 @@ app.include_router(candidates.router)
 
 @app.get("/")
 def index(request: Request, db: Session = Depends(get_db)):
-    user = get_current_user(request, db)
-    # добавляем флаг authenticated
-    if user:
-        user.authenticated = True
+    user_obj = get_current_user(request, db)
+    user = None
+    if user_obj:
+        user = {
+            "authenticated": True,
+            "id": user_obj.id,
+            "full_name": user_obj.full_name,
+            "type": user_obj.type.value if hasattr(user_obj.type, "value") else str(user_obj.type)
+        }
     return templates.TemplateResponse("index.html", {"request": request, "user": user})
