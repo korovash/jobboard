@@ -8,6 +8,9 @@ from fastapi.templating import Jinja2Templates
 import os
 from passlib.context import CryptContext
 from ..auth_utils import create_session_cookie, logout
+import logging
+
+logger = logging.getLogger("jobboard.auth")
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), '..', 'templates'))
 router = APIRouter(prefix='/auth', tags=['auth'])
@@ -60,6 +63,7 @@ def login_form(request: Request,
 
     redirect = RedirectResponse(url='/', status_code=303)
     create_session_cookie(redirect, db_user.id)
+    logger.info("Login: set-cookie header -> %s", redirect.headers.get("set-cookie"))
     return redirect
 
 
