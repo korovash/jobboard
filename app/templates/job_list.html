@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Вакансии — Jobboard{% endblock %}
+{% block content %}
+<h2>Вакансии</h2>
+{% if user and user.type == 'recruiter' %}
+  <a class="btn btn-cta btn-outline" href="/jobs/new">Новая вакансия</a>
+{% endif %}
+<ul class="list-group mt-3">
+  {% for job in jobs %}
+    <li class="list-group-item">
+      <h5>{{ job.title }}</h5>
+      <p>{{ job.description }}</p>
+      <small>{{ job.category }} — {{ job.location }}</small>
+    </li>
+  {% else %}
+    <li class="list-group-item">Вакансий не найдено</li>
+  {% endfor %}
+</ul>
+{% endblock %}

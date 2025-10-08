@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Кандидаты{% endblock %}
+{% block content %}
+<h3>Кандидаты</h3>
+<ul class="list-group mt-3">
+  {% for u in users %}
+    <li class="list-group-item">
+      <strong>{{ u.full_name or u.email }}</strong>
+      <div>Email: {{ u.email }}</div>
+    </li>
+  {% else %}
+    <li class="list-group-item">Нет кандидатов</li>
+  {% endfor %}
+</ul>
+{% endblock %}

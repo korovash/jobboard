@@ -48,3 +48,13 @@ def update_resume(db: Session, candidate_id: int, data: schemas.CandidateCreate)
     db.commit()
     db.refresh(cand)
     return cand
+
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+def list_candidates(db: Session, skip: int = 0, limit: int = 50):
+    # возвращаем User ORM-объекты соискателей
+    return db.query(models.User).filter(models.User.type == models.UserType.candidate).offset(skip).limit(limit).all()
+
+def get_candidate_by_user_id(db: Session, user_id: int):
+    return db.query(models.Candidate).filter(models.Candidate.user_id == user_id).first()

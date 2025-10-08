@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Моё резюме{% endblock %}
+{% block content %}
+<h3>Моё резюме</h3>
+<form method="post" action="/candidates/me/resume">
+  <div class="mb-3">
+    <label class="form-label">Краткое резюме / текст</label>
+    <textarea name="resume" class="form-control">{{ candidate.resume if candidate else '' }}</textarea>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Навыки (через запятую)</label>
+    <input name="skills" class="form-control" value="{{ candidate.skills if candidate else '' }}">
+  </div>
+  <button class="btn btn-primary">Сохранить</button>
+</form>
+{% endblock %}

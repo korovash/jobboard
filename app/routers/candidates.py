@@ -1,19 +1,42 @@
 # app/routers/candidates.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Request, Form, HTTPException
 from sqlalchemy.orm import Session
 from .. import schemas, crud, models
 from ..database import get_db
+from fastapi.templating import Jinja2Templates
+import os
+from ..auth_utils import get_current_user, require_candidate, require_recruiter, user_obj_to_dict
 
+templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), '..', 'templates'))
 router = APIRouter(prefix='/candidates', tags=['candidates'])
 
-@router.put('/{candidate_id}/resume')
-def update_resume(candidate_id: int, data: schemas.CandidateCreate, db: Session = Depends(get_db)):
-    cand = crud.update_resume(db, candidate_id, data)
-    if not cand:
-        raise HTTPException(status_code=404, detail='Candidate not found')
-    return cand
-
 @router.get('/', response_model=list[schemas.UserOut])
-def list_candidates(skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
-    users = db.query(models.User).filter(models.User.type==models.UserType.candidate).offset(skip).limit(limit).all()
-    return users
+def list_candidates_page(request: Request, db: Session = Depends(get_db), current_user = Depends(require_recruiter)):
+    # рекрутер видит список кандидатов
+    users = crud.list_candidates(db)
+    user = user_obj_to_dict(current_user)
+    return templates.TemplateResponse('candidates_list.html', {'request': request, 'users': users, 'user': user})
+
+# candidate self resume edit/view
+@router.get('/me/resume')
+def my_resume_form(request: Request, db: Session = Depends(get_db), current_user = Depends(require_candidate)):
+    cand = crud.get_candidate_by_user_id(db, current_user.id)
+    user = user_obj_to_dict(current_user)
+    return templates.TemplateResponse('resume_form.html', {'request': request, 'candidate': cand, 'user': user})
+
+@router.post('/me/resume')
+def my_resume_update(request: Request,
+                     resume: str = Form(None),
+                     skills: str = Form(None),
+                     db: Session = Depends(get_db),
+                     current_user = Depends(require_candidate)):
+    cand = crud.get_candidate_by_user_id(db, current_user.id)
+    if not cand:
+        # создать запись кандидата, если её нет
+        from ..models import Candidate
+        cand = Candidate(user_id=current_user.id)
+        db.add(cand); db.commit(); db.refresh(cand)
+
+    data = schemas.CandidateCreate(resume=resume, skills=skills)
+    crud.update_resume(db, cand.id, data)
+    return RedirectResponse(url='/candidates/me/resume', status_code=303)
