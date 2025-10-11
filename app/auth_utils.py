@@ -5,10 +5,11 @@ from sqlalchemy.orm import Session
 from . import crud, models
 from .database import get_db
 from typing import Optional
+from .config import settings
 
-SECRET_KEY = "CHANGE_THIS_TO_RANDOM_STRING"
+SECRET_KEY = settings.SECRET_KEY
 serializer = URLSafeSerializer(SECRET_KEY, salt="cookie-session")
-COOKIE_NAME = "jobboard_session"
+COOKIE_NAME = settings.COOKIE_NAME
 
 def create_session_cookie(response: Response, user_id: int):
     data = serializer.dumps({"user_id": user_id})

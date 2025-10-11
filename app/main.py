@@ -7,6 +7,9 @@ from .routers import auth, jobs, candidates
 from .auth_utils import get_current_user_obj, user_obj_to_dict
 from sqlalchemy.orm import Session
 import os
+from .logging_config import setup_logging
+
+setup_logging()
 
 Base.metadata.create_all(bind=engine)
 
